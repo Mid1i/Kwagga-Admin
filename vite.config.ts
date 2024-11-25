@@ -1,9 +1,21 @@
+import federation from "@originjs/vite-plugin-federation";
+
 import vue from "@vitejs/plugin-vue";
 import { defineConfig } from "vite";
 
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    federation({
+      name: "admin",
+      filename: "remoteEntry.js",
+      exposes: {
+        "./AdminApp": "./src/App.vue"
+      },
+      shared: ["vue"]
+    })
+  ],
   resolve: {
     alias: {
       "@/": "/src/",
@@ -16,6 +28,10 @@ export default defineConfig({
       "@/types": "/src/types",
       "@/views": "/src/views"
     }
+  },
+  build: {
+    target: "esnext",
+    minify: false
   },
   server: {
     host: true,
